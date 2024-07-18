@@ -96,7 +96,8 @@ int dbay32DAC::reset(){
       int CSPin0 = dbay32DAC_DACSYNC;
       
       DAC4ch = new DAC_AD5684(1, this->BoardSel,  CSPin0);
-        
+      DAC4ch->set_ref(1,DACbaseRef);
+
       for(int j=0; j<16; j++){
          ditherMode[j] = false;
          DACRange[j] = LTC268X_VOLTAGE_RANGE_M10V_10V;
@@ -161,7 +162,7 @@ int dbay32DAC::SetVoltage (int channel, double voltage){
     Serial.print("DAC voltage out of range");
     return -1;
   }else if (channel == -1){ //channel -1 is assign on this board to the 8V
-    DAC4ch->set_V(1,channel,(voltage/dbay32DAC_OPAMPGAIN));
+    DAC4ch->set_V(1,0,(voltage/dbay32DAC_OPAMPGAIN));
   }else if(channel<0 || channel >31){
     Serial.print("DAC channel out of range");
     return -1;

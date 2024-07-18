@@ -47,9 +47,11 @@ DAC_AD5684::DAC_AD5684(uint8_t ex_numdac,
   Serial.println(data_buff[3],HEX);
 */
   
-  SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE));
+  SPI.beginTransaction(SPISettings(SPI_BAUD_AD5684, MSBFIRST, SPI_MODE_AD5684));
   _BoardSel->digitalWrite(_CSPin, LOW);
-  SPI.transfer(data_buff,3);
+    SPI.transfer(data_buff[0]);
+    SPI.transfer(data_buff[1]);
+    SPI.transfer(data_buff[2]);
   _BoardSel->digitalWrite(_CSPin, HIGH);
   SPI.endTransaction();
 
@@ -57,9 +59,11 @@ DAC_AD5684::DAC_AD5684(uint8_t ex_numdac,
   data_buff[0]=0x00 | (PWR_UPDWN<<4);
   data_buff[1]=0x00;
   data_buff[2]=0x00;
-  SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE));
+  SPI.beginTransaction(SPISettings(SPI_BAUD_AD5684, MSBFIRST, SPI_MODE_AD5684));
   _BoardSel->digitalWrite(_CSPin, LOW);
-  SPI.transfer(data_buff,3);
+    SPI.transfer(data_buff[0]);
+    SPI.transfer(data_buff[1]);
+    SPI.transfer(data_buff[2]);
   _BoardSel->digitalWrite(_CSPin, HIGH);
   SPI.endTransaction();
 
@@ -68,9 +72,11 @@ DAC_AD5684::DAC_AD5684(uint8_t ex_numdac,
   data_buff[0]=0x00 | (IN_REF<<4);
   data_buff[1]=0x00;
   data_buff[2]=0x00;
-  SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE));
+  SPI.beginTransaction(SPISettings(SPI_BAUD_AD5684, MSBFIRST, SPI_MODE_AD5684));
   _BoardSel->digitalWrite(_CSPin, LOW);
-  SPI.transfer(data_buff,3);
+    SPI.transfer(data_buff[0]);
+    SPI.transfer(data_buff[1]);
+    SPI.transfer(data_buff[2]);
   _BoardSel->digitalWrite(_CSPin, HIGH);
   SPI.endTransaction();
 
@@ -84,36 +90,37 @@ DAC_AD5684::~DAC_AD5684(){
 int DAC_AD5684::set_V(int dac, int outChan, double value){
  int volt_set = 0;
  if(dac<num_dacs+1 && dacsref!=NULL)volt_set = (int)(value*4095/dacsref[dac-1]);
- // Serial.println(volt_set,HEX);
+ Serial.println(value);
+ //Serial.println(dacsref[dac-1]);
+Serial.println(volt_set,HEX);
 
- data_buff[0]= (0x01<<(outChan-1)) | (WRITE_UPDATED_DAC<<4);
-// Serial.println(data_buff[0],HEX);
+ data_buff[0]= (0x01<<(outChan)) | (WRITE_UPDATED_DAC<<4);
  data_buff[1]=volt_set>>4;
  data_buff[2]=0xF0 & volt_set<<4;
- //Serial.println("beg trans:");
 
- SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE));
+ SPI.beginTransaction(SPISettings(SPI_BAUD_AD5684, MSBFIRST, SPI_MODE_AD5684));
  _BoardSel->digitalWrite(_CSPin, LOW);
  if(dac<num_dacs+1){
  
-        /* Serial.print("vset "); Serial.print("\t");
-         Serial.print(data_buff[0],HEX); Serial.print("\t");
-         Serial.print(data_buff[1],HEX); Serial.print("\t");
-         Serial.println(data_buff[2],HEX);*/
-        SPI.transfer(data_buff[0]);
-         SPI.transfer(data_buff[1]);
-         SPI.transfer(data_buff[2]);
-         
-         for(int i=1; i<dac;i++){
-          
-            no_op[0] = 0xFF; //this because transfer is destructive
+    Serial.print("vset "); Serial.print("\t");
+    Serial.print(data_buff[0],HEX); Serial.print("\t");
+    Serial.print(data_buff[1],HEX); Serial.print("\t");
+    Serial.println(data_buff[2],HEX);
 
-          /*  Serial.print("NOOP ");Serial.print("\t");
-            Serial.print(no_op[0],HEX);Serial.print("\t");
-            Serial.print(no_op[1],HEX);Serial.print("\t");
-            Serial.println(no_op[2],HEX);*/
-            SPI.transfer(no_op,3);
-         }
+    SPI.transfer(data_buff[0]);
+    SPI.transfer(data_buff[1]);
+    SPI.transfer(data_buff[2]);
+      
+  /*  for(int i=1; i<dac;i++){
+      
+        no_op[0] = 0xFF; //this because transfer is destructive
+
+      Serial.print("NOOP ");Serial.print("\t");
+        Serial.print(no_op[0],HEX);Serial.print("\t");
+        Serial.print(no_op[1],HEX);Serial.print("\t");
+        Serial.println(no_op[2],HEX);
+        SPI.transfer(no_op,3);
+    }*/
   
  }
  //delay(1);

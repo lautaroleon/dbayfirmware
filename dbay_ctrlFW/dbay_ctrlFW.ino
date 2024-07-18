@@ -380,14 +380,14 @@ int do_command(char *cmd, float *value){
         
             if(!strcmp(tokens[1], "VSB")){
                 if (ntok != 4){
-                  sprintf(err, "VSB command expects 2 arguments: [board] [voltage]");
+                  sprintf(err, "VSB command expects 2 arguments: [board] [voltage] %d",ntok);
                   return -1;
                 }else if(mystrtoi(tokens[2],&board)) {
-                    sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-                    return -1;
+                  sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
+                  return -1;
                 }else if (mystrtod(tokens[3],&voltage)) {
-                     sprintf(err, "expected argument 2 to be double but got '%s'", tokens[4]);
-                     return -1;
+                   sprintf(err, "expected argument 2 to be double but got '%s'", tokens[4]);
+                   return -1;
                 }else if(module[board] == nullptr){
                   sprintf(err, "DAC16D, VSB, board is not initialized yet. Use SETDEV.");
                   return -1;

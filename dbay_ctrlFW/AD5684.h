@@ -14,8 +14,8 @@
 #define READBACK 0x9
 #define NOOP_DC 0xF
 
-#define SPI_BAUD 10000
-#define SPI_MODE SPI_MODE0
+#define SPI_BAUD_AD5684 100000
+#define SPI_MODE_AD5684 SPI_MODE1
 
 class DAC_AD5684
 {

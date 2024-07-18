@@ -20,6 +20,8 @@
 #define dbay32DAC_OPAMPGAIN 3.2
 #define dbay32DAC_ADC_CS  2
 
+#define DACbaseRef 2.5
+
 class dbay32DAC : public dbayDev{
 
   public:
