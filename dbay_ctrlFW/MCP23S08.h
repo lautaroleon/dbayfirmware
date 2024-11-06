@@ -33,7 +33,7 @@ public:
 	// constructors
 	MCP23S08(uint8_t csPin);
 	MCP23S08(uint8_t csPin, uint8_t deviceAddr);
-	
+	//MCP23S08(uint8_t eadr0,uint8_t eadr1,uint8_t eadr2,uint8_t eadr3,uint8_t eadr4,uint8_t eadr5,uint8_t eadr6,uint8_t eadr7)
 	// call in setup
 	void begin();
 	
@@ -57,10 +57,11 @@ private:
 	// private variables
 	uint8_t csPin;
 	uint8_t deviceOpcode = 0x40;
-	
+	uint8_t adr0,adr1,adr2,adr3,adr4,adr5,adr6,adr7;
 	// low level SPI communication
 	void writeRegister(uint8_t address, uint8_t data);
 	uint8_t readRegister(uint8_t address);
+	//void CSbus(bool s);
 };
 
 #endif	// __MCP23S08_h__

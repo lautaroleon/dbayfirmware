@@ -8,6 +8,7 @@
 //#include "PCA9557.h"
 #include "dbay_4triacDAC.h"
 #include "dbay_32DAC.h"
+#include "MCP23S08.h"
 
 #define MAX_MSG_LENGTH 1024
 #define LEN(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
@@ -27,7 +28,31 @@
 #define D14 5
 #define D15 20
 
+///teensy pins connected to the bus, only one is connected per module
+#define BADD0 33
+#define BADD1 36
+#define BADD2 37
+#define BADD3 38
+#define BADD4 32
+#define BADD5 31
+#define BADD6 30
+#define BADD7 39
 
+#define GPIOi2cAdr0 0
+#define GPIOi2cAdr1 1
+#define GPIOi2cAdr2 3
+
+//multipropouse auxiliar pins. Write here if you use one of them
+#define AUX1 2
+#define AUX2 3
+#define AUX3 4
+#define AUX4 5
+#define AUX5 6
+#define AUX6 23
+#define AUX7 22
+#define AUX8 21
+#define AUX9 20
+#define AUX10 9
 
 /* Base address for the PCA9557. This base address is modified by the three
  * least significant bits set by the DIP switches on each board. */
@@ -48,29 +73,28 @@ int rv=0;
 
 int boardsactive[MAXMODULES]={0};
 
-//enum deviceType boardtype[MAXMODULES] = {NODEV};
-
-//dbay4triacDAC *triacdac[MAXMODULES]
 dbayDev *module[MAXMODULES] = {nullptr};
 
-  bool debug = false;
-  char cmd[MAX_MSG_LENGTH];
-  char err[MAX_MSG_LENGTH];
-  char msg[MAX_MSG_LENGTH];
-  int k = 0;
+MCP23S08 *busaddressGPIO[MAXMODULES]={0}; //we will use 8 pins as CS. Only one connect every module
+int busaddrarray[MAXMODULES];
+int GPIOi2cmap[3] = {GPIOi2cAdr0, GPIOi2cAdr1, GPIOi2cAdr2};
+
+bool debug = false;
+char cmd[MAX_MSG_LENGTH];
+char err[MAX_MSG_LENGTH];
+char msg[MAX_MSG_LENGTH];
+int k = 0;
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
-byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAC  };
+byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAD  };
 
 unsigned int localPort = 8880;      // local port to listen on
 
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
 
-// An EthernetUDP instance to let us send and receive packets over UDP
 EthernetUDP Udp;
-
 
 int mystrtoi(const char *str, int *value)
 {
@@ -87,6 +111,7 @@ int mystrtoi(const char *str, int *value)
     *value = (int) lvalue;
     return 0;
 }
+
 double mystrtod(const char *nptr, double *value)
 {
     char *endptr;
@@ -103,6 +128,7 @@ double mystrtod(const char *nptr, double *value)
 
     return 0;
 }
+
 int strtobool(const char *str, bool *value)
 {
     if (!strcasecmp(str,"on") || !strcasecmp(str,"1"))
@@ -159,13 +185,8 @@ void scanI2C(){
     Serial.println("done\n");
 }
 
-
 int reset(){
-  
 
-    scanI2C();
-    
-      
     #ifdef ETHERNET
         // start the Ethernet
         Ethernet.begin(mac);
@@ -185,9 +206,20 @@ int reset(){
         // start UDP
           Udp.begin(localPort);
     #endif
-
-
+  
     for(int i =0; i<MAXMODULES; i++){
+       if(busaddressGPIO[i] == nullptr)busaddressGPIO[i] = new MCP23S08(busaddrarray[i]); 
+       busaddressGPIO[i]->begin();
+       for(int j = 0 ; j<3; j++){
+          busaddressGPIO[i]->pinModeIO(GPIOi2cmap[j], OUTPUT);
+          if( (i & 0x01<<j)>>j )busaddressGPIO[i]->digitalWriteIO(GPIOi2cmap[j], true);
+          else busaddressGPIO[i]->digitalWriteIO(GPIOi2cmap[j], false);
+        }
+      }
+      
+      scanI2C();
+      
+      for(int i =0; i<MAXMODULES; i++){
         if(boardsactive[i]){
             if(module[i] != nullptr){
                 switch(module[i]->thisDeviceType){
@@ -253,8 +285,6 @@ int setdevicetype( int channel, char *devtypestr){
       break;
   }
 }
-
-
 
 int do_command(char *cmd, float *value){
     int ntok = 0;
@@ -336,7 +366,7 @@ int do_command(char *cmd, float *value){
             return -1;
         }*/
         
-             if(!strcmp(tokens[1], "VS")){
+            if(!strcmp(tokens[1], "VS")){
                 if (ntok != 5){
                   sprintf(err, "VS command expects 3 arguments: [board] [channel] [voltage]");
                   return -1;
@@ -376,9 +406,7 @@ int do_command(char *cmd, float *value){
                   sprintf(err, "Calling DAC16D command but board is initialized as '%s'", module[board]->deviceTypeToString());
                   return -1;
                 }else if(module[board]->SetVoltageDiff(channel, voltage))return -1;          
-            }      
-        
-            if(!strcmp(tokens[1], "VSB")){
+            }else if(!strcmp(tokens[1], "VSB")){
                 if (ntok != 4){
                   sprintf(err, "VSB command expects 2 arguments: [board] [voltage] %d",ntok);
                   return -1;
@@ -395,9 +423,7 @@ int do_command(char *cmd, float *value){
                   sprintf(err, "Calling DAC16D command but board is initialized as '%s'", module[board]->deviceTypeToString());
                   return -1;
                 }else if(module[board]->SetVoltage(-1, voltage))return -1; 
-            }         
-        
-            if(!strcmp(tokens[1], "VR")){
+            }else if(!strcmp(tokens[1], "VR")){
                 if (ntok != 3){
                   sprintf(err, "VR command expects 1 arguments: [board]");
                   return -1;
@@ -413,12 +439,15 @@ int do_command(char *cmd, float *value){
                 }else{
                   //Serial.println("hey");
                     double chP = module[board]->ReadVoltage(0);
-                    double chN = module[board]->ReadVoltage(1);
-                    
-                    *value = (float)(chP-chN);
+                   // double chN = module[board]->ReadVoltage(1);
+                    *value = (float)chP;
                     return 2;
                 }
 
+            }
+            else{
+              sprintf(err, "Unknown parameter for DAC16D");
+              return -1;
             }
         
     }else if (!strcmp(tokens[0], "debug")) {
@@ -436,9 +465,21 @@ int do_command(char *cmd, float *value){
           
           return (reset());
     }else if (!strcmp(tokens[0], "help")) {
-        sprintf(err,"SetDac [board] [channel] [voltage]\n"
+        sprintf(err,"SETDEV [address] [device type]\n"
+                    "DAC4D [VS/VSD] [board] [channel] [voltage]\n"
+                    "DAC16D [VS/VSD] [board] [channel] [voltage]\n"
+                    "DAC16D VSB [board] [voltage]\n"
+                    "DAC16D VR\n"
                       "help\n"
-                      "debug");
+                      "debug\n"
+                      "\n"
+                      "ip: %d.%d.%d.%d\n"
+                      "MAC: %x-%x-%x-%x-%x-%x",
+                      Ethernet.localIP()[0],
+                      Ethernet.localIP()[1],
+                      Ethernet.localIP()[2],
+                      Ethernet.localIP()[3],
+                      mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
                    
         return -1;
     }else {
@@ -450,7 +491,6 @@ int do_command(char *cmd, float *value){
     return 0;
 }
 
-
 void format_message(int rv, float value)
 {
     //Serial.print("return from the func on f m: ");
@@ -460,12 +500,19 @@ void format_message(int rv, float value)
     } else if (rv == 1) {
         sprintf(msg, ":%i\n", (int) value);
     } else if (rv == 2) {
-        sprintf(msg, ",%.18f\n", value);
+        char floatmsg[64];
+        dtostrf(value, 6, 6, floatmsg);
+        //Serial.print("floatmsg: ");
+        //Serial.println(floatmsg);
+        //sprintf(msg, ",%.18f\n", value);
+        sprintf(msg, ",%s\n", floatmsg);
+        //Serial.print("msg: ");
+        //Serial.println(msg);
+
     } else {
         sprintf(msg, "+ok\n");
     }
 }
-
 
 void setup()
 {
@@ -488,6 +535,40 @@ void setup()
   pinMode(D13,OUTPUT);
   pinMode(D14,OUTPUT);
   pinMode(D15,OUTPUT);
+
+  busaddrarray[0]=BADD0;
+  busaddrarray[1]=BADD1;
+  busaddrarray[2]=BADD2;
+  busaddrarray[3]=BADD3;
+  busaddrarray[4]=BADD4;
+  busaddrarray[5]=BADD5;
+  busaddrarray[6]=BADD6;
+  busaddrarray[7]=BADD7;
+
+  for(int i =0; i<MAXMODULES; i++){
+    pinMode(busaddrarray[i],OUTPUT);
+  }
+
+  digitalWrite(BADD0, HIGH);
+  digitalWrite(BADD1, HIGH);
+  digitalWrite(BADD2, HIGH);
+  digitalWrite(BADD3, HIGH);
+  digitalWrite(BADD4, HIGH);
+  digitalWrite(BADD5, HIGH);
+  digitalWrite(BADD6, HIGH);
+  digitalWrite(BADD7, HIGH);
+
+//multipropouse auxiliar pins. Write here if you use one of them
+  pinMode(AUX1,OUTPUT);
+  pinMode(AUX2,OUTPUT);
+  pinMode(AUX3,OUTPUT);
+  pinMode(AUX4,OUTPUT);
+  pinMode(AUX5,OUTPUT);
+  pinMode(AUX6,OUTPUT);
+  pinMode(AUX7,OUTPUT);
+  pinMode(AUX8,OUTPUT);
+  pinMode(AUX9,OUTPUT);
+  pinMode(AUX10,OUTPUT);
 
 
   reset();
@@ -512,6 +593,11 @@ void loop()
             int rv = do_command(cmd, &temp);
             format_message(rv,temp);
             Serial.print(msg);
+            
+            if(debug){
+              Serial.print("command on serial port: ");
+              Serial.println(cmd);
+            }
             k = 0;
         }
     }
@@ -551,9 +637,9 @@ void loop()
         temp = 0;
         rv = do_command(packetBuffer, &temp);
         format_message(rv,temp);
-        if(!temp){   
+        
           Serial.print(msg);
-        }
+        
 
         // send a reply to the IP address and port that sent us the packet we received
         Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());

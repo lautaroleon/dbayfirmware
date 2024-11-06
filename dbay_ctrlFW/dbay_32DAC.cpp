@@ -142,7 +142,7 @@ int dbay32DAC::reset(){
         // - gain of 1 for a bipolar measurement +/- 2.5V
         adc->setConfig (0, Ad7124::RefInternal, Ad7124::Pga1, true);
           // Setting channel 0 using pins AIN1(+)/AIN0(-)
-        adc->setChannel (0, 0, Ad7124::AIN1Input, Ad7124::AIN0Input);
+        adc->setChannel (0, 0, Ad7124::AIN0Input, Ad7124::AIN1Input);
           // Configuring ADC in Full Power Mode (Fastest)
         adc->setAdcControl (Ad7124::StandbyMode, Ad7124::FullPower, true);
   
@@ -182,7 +182,7 @@ int dbay32DAC::SetVoltageDiff(int diffchannel, double voltage) {
     Serial.print("DAC voltage out of range");
     return -1;
   }
-  if(diffchannel<0 || diffchannel >15){
+  if(diffchannel<0 || diffchannel >15){//to do: group channels with negative channel parameter
     Serial.print("DAC channel out of range");
     return -1;
   }
@@ -198,7 +198,8 @@ double dbay32DAC::ReadVoltage(int channel){
   double voltage;
   value = adc->read (channel);
   voltage = Ad7124Chip::toVoltage (value, 1, 2.5, true);
-  Serial.println(voltage);
+  //Serial.print("voltage on dac class TBD: ");
+  //Serial.println(voltage);
  return voltage;
 }
 
