@@ -56,7 +56,7 @@ ltc268x::ltc268x(   enum ltc268x_device_id       dev_id,
   // Set the address pin HIGH so we don't talk to multiple chips at once. 
 
   if (!_BoardSel->digitalWrite(_PCA9557busDAC_CS,HIGH)) {
-      sprintf(_err, "Error setting address pin for board %i HIGH\n", BoardSel->boardN);
+      sprintf(_err, "Error setting address pin for board %i HIGH\n", _BoardSel->boardN);
       Serial.print(_err);
       //rv = -1;
   }      
@@ -145,9 +145,17 @@ int32_t ltc268x::spi_write(uint8_t reg, uint16_t data){
   
   ret=0;
   //ret = no_os_spi_write_and_read(dev->spi_desc, buf, 3);
-  _BoardSel->digitalWrite(_PCA9557busDAC_CS, LOW);
-  delay(1);
-  SPI.beginTransaction(SPISettings(SPIBAUD, MSBFIRST, SPIMODE));
+ //Serial.println(this->_PCA9557busDAC_CS);
+ //delayMicroseconds(1);
+  if (!_BoardSel->digitalWrite(this->_PCA9557busDAC_CS,LOW)) {
+      sprintf(_err, "Error setting address pin for board %i HIGH\n", _BoardSel->boardN);
+      Serial.print(_err);
+      //rv = -1;
+  }      
+
+ delayMicroseconds(1);
+  
+  SPI.beginTransaction(SPISettings(SPIBAUD_, MSBFIRST, SPI_MODE3));
   //for (int i=2;  i >= 0; i--){
   for (int i=0;  i < 3; i++){
     //DEBUG_PRINTELN
@@ -156,8 +164,14 @@ int32_t ltc268x::spi_write(uint8_t reg, uint16_t data){
     SPI.transfer(buf[i]);    //! 2) Read and send byte array
   }
   SPI.endTransaction();
-  _BoardSel->digitalWrite(_PCA9557busDAC_CS, HIGH);
-  //delay(1);
+  //_BoardSel->digitalWrite(_PCA9557busDAC_CS, HIGH);
+  delayMicroseconds(1);
+  if (!_BoardSel->digitalWrite(_PCA9557busDAC_CS,HIGH)) {
+      sprintf(_err, "Error setting address pin for board %i HIGH\n", _BoardSel->boardN);
+      Serial.print(_err);
+      //rv = -1;
+  }      
+  delayMicroseconds(1);
  /* SPI.beginTransaction(SPISettings(SPIBAUD, MSBFIRST, SPIMODE));
   for (int i=0;  i < 3; i++){
   SPI.transfer(0xF);    //! 2) Read and send byte array
@@ -182,11 +196,11 @@ int32_t ltc268x::spi_read(uint8_t reg, uint16_t *data)
   uint8_t rx_array[3];
 
   this->spi_write(reg | LTC268X_READ_OPERATION, 0x0000);
-
+  
   buf[0] = LTC268X_CMD_NOOP;
   //ret = no_os_spi_write_and_read(dev->spi_desc, buf, 3);
-  _BoardSel->digitalWrite(_PCA9557busDAC_CS, LOW);
-  SPI.beginTransaction(SPISettings(SPIBAUD, MSBFIRST, SPIMODE));
+  _BoardSel->digitalWrite(this->_PCA9557busDAC_CS, LOW);
+  SPI.beginTransaction(SPISettings(SPIBAUD_, MSBFIRST, SPI_MODE3));
   //for (int i=2;  i >= 0; i--){
   for (int i=0;  i < 3; i++){
     rx_array[i] = SPI.transfer(buf[i]);    //! 2) Read and send byte array

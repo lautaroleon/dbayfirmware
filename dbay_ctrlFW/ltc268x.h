@@ -51,8 +51,7 @@
 /******************* Macros and Constants Definitions *************************/
 /******************************************************************************/
 
-#define SPIBAUD 10000
-#define SPIMODE SPI_MODE3
+
 
 
 
@@ -209,6 +208,9 @@ private:
   PCA9557 *_BoardSel;
   char _err[1024];
   int _PCA9557busDAC_CS;
+
+  int SPIBAUD_ = 10000;
+
 };
 
 /*struct ltc268x_init_param {

@@ -120,7 +120,7 @@ int dbay32DAC::reset(){
                           ABReg,
                           this->BoardSel,
                           CSpin1);
-
+//delay(3000);
         DAC2 = new ltc268x(dacid, 
                           PWDdacSett,
                           ditherToggleEN,
@@ -153,10 +153,10 @@ int dbay32DAC::reset(){
 int dbay32DAC::SetVoltage (int channel, double voltage){
 
 
-  if (debug){
-    Serial.print(channel);Serial.print("\t");
-    Serial.println(voltage);
-  }
+  
+    /*Serial.print(channel);Serial.print("\t");
+    Serial.println(voltage);*/
+  
 
   if(voltage<-10 || voltage >10){
     Serial.print("DAC voltage out of range");
@@ -167,17 +167,23 @@ int dbay32DAC::SetVoltage (int channel, double voltage){
     Serial.print("DAC channel out of range");
     return -1;
   }else{
-    if(channel >= 0 || channel <= 15)return (DAC1->set_voltage(channel, voltage));
-    else if(channel > 15 || channel < 32)return (DAC2->set_voltage(channel-16, voltage));
+    if(channel >= 0 && channel <= 15){
+      //Serial.println("printing on DAC1");
+      return (DAC1->set_voltage(channel, voltage));
+    }
+    else if(channel > 15 && channel < 32){
+      //Serial.println("printing on DAC2");
+      return (DAC2->set_voltage(channel-16, voltage));
+    }
   }
   
 }
 
 int dbay32DAC::SetVoltageDiff(int diffchannel, double voltage) {
-  if (debug){
+ /* if (debug){
     Serial.print("diffchannel");Serial.println(diffchannel);
     Serial.print("voltage");Serial.println(voltage);
-  }
+  }*/
   if(voltage<-20 || voltage >20){
     Serial.print("DAC voltage out of range");
     return -1;
