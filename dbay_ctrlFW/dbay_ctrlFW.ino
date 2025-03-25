@@ -18,7 +18,7 @@
 #define MAX_MSG_LENGTH 1024
 //#define MAX_MSG_LENGTH 32
 #define LEN(x) ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
-//#define ETHERNET
+#define ETHERNET
 #define DELAY 10
 
 /////digital pin on the VME Bus, is one is used please write it down on a comment here//////
@@ -93,6 +93,16 @@ int k = 0;
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
+
+/*
+ avoid:
+x2-xx-xx-xx-xx-xx
+x6-xx-xx-xx-xx-xx
+xA-xx-xx-xx-xx-xx
+xE-xx-xx-xx-xx-xx
+ */
+
+
 byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAC  };
 
 unsigned int localPort = 8880;      // local port to listen on
@@ -229,6 +239,8 @@ void scanI2C(){
 int reset(){
 
     #ifdef ETHERNET
+
+        Serial.println("initializing ethernet, please wait");
         // start the Ethernet
         Ethernet.begin(mac);
       
@@ -245,7 +257,8 @@ int reset(){
         }else if (debug)Serial.println("cable connected");
         if (debug)Serial.println("start udp");
         // start UDP
-          Udp.begin(localPort);
+        Udp.begin(localPort);
+        Serial.println("UDP init done");
     #endif
   
     for(int i =0; i<MAXMODULES; i++){
@@ -262,6 +275,7 @@ int reset(){
       
       for(int i =0; i<MAXMODULES; i++){
         if(boardsactive[i]){
+          Serial.print("board active: ");Serial.println(i);
             if(module[i] != nullptr){
                 switch(module[i]->thisDeviceType){
                     case(DAC4D): 
@@ -604,7 +618,16 @@ int do_command(char *cmd, float *value) {
                     "DAC16D VR\n"
                     "debug [on/off]\n"
                     "reset\n"
-                    "help");
+                    "help"
+                    "debug\n"
+                    "\n"
+                    "ip: %d.%d.%d.%d\n"
+                    "MAC: %x-%x-%x-%x-%x-%x",
+                    Ethernet.localIP()[0],
+                    Ethernet.localIP()[1],
+                    Ethernet.localIP()[2],
+                    Ethernet.localIP()[3],
+                    mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
         return -1;
     }
 
@@ -671,16 +694,8 @@ void setup()
 
   for(int i =0; i<MAXMODULES; i++){
     pinMode(busaddrarray[i],OUTPUT);
+    digitalWrite(busaddrarray[i], HIGH);
   }
-
-  digitalWrite(BADD0, HIGH);
-  digitalWrite(BADD1, HIGH);
-  digitalWrite(BADD2, HIGH);
-  digitalWrite(BADD3, HIGH);
-  digitalWrite(BADD4, HIGH);
-  digitalWrite(BADD5, HIGH);
-  digitalWrite(BADD6, HIGH);
-  digitalWrite(BADD7, HIGH);
 
 //multipropouse auxiliar pins. Write here if you use one of them
   pinMode(AUX1,OUTPUT);
@@ -697,8 +712,6 @@ void setup()
 
   reset();
   //int board = 0;
- 
-
 }
 
 void loop()
