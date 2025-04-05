@@ -66,7 +66,7 @@ dbay32DAC::dbay32DAC(int address, TwoWire *bus):dbayDev(address, bus){
         Serial.print(_err);
         //rv = -1;
     }
-
+    
     if (!BoardSel->digitalWrite(dbay32DAC_DACSYNC, HIGH)) {
           sprintf(_err, "Error setting address pin for board %i HIGH\n", BoardSel->boardN);
           Serial.print(_err);

@@ -18,7 +18,8 @@ enum deviceType{
   DAC4D, //DAC 4 diff channels (triacs)
   DAC16D,  //DAC 16 differential + 500mA 5V + 8V 1mA + 1 diff ADC
   FAFD,   //4ADC + 4DAC
-  HIC4   //4DAC high current
+  HIC4,   //4DAC high current
+  ADC4D //4 channel triax diff adc
 };
 
 class dbayDev {
@@ -39,7 +40,7 @@ class dbayDev {
     virtual int SetVoltageDiff(int diffchannel, double voltage){return 0;}
     virtual double ReadVoltage(int channel){return 0;}
     //virtual int SetBase(double voltage){return 0;}
-
+    //virtual int handleCommand(std::vector<std::string> tokens){return 0;}
   protected:
     int i2cadress;
     TwoWire *_bus;

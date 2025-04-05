@@ -12,6 +12,7 @@
 //#include "PCA9557.h"
 #include "dbay_4triacDAC.h"
 #include "dbay_32DAC.h"
+#include "dbay_4triaxADC.h"
 #include "MCP23S08.h"
 
 
@@ -334,6 +335,19 @@ int setdevicetype( int channel, char *devtypestr){
           return 0;
 
       }else return 0;
+      case ADC4D: 
+      if(module[channel] == nullptr){
+        Serial.println("ADC4D created");
+        module[channel] = new dbay4triaxADC(BASE_ADDR+channel, &Wire);         
+        return 0;
+
+      }else if( module[channel]->thisDeviceType != devtype){
+        Serial.println("DAC4D replaced");
+        delete module[channel];
+        module[channel] = new dbay4triaxADC(BASE_ADDR+channel, &Wire);
+        return 0;
+
+      }else return 0;
     default:
       Serial.println("wrong devtype");
       return -1;
@@ -540,19 +554,131 @@ int do_command(char *cmd, float *value) {
     }
 
     const std::string& command = tokens[0];
+    deviceType devtype = dbayDev::deviceTypeFromString(command.c_str());
+    int board, channel;
+    double voltage;
+
 
     if (command == "SETDEV") {
         if (tokens.size() != 3) {
             sprintf(err, "SETDEV requires 2 arguments: [address] [device type]");
             return -1;
         }
-        int channel;
-        if (!parseInt(tokens[1].c_str(), channel) || channel < 0 || channel > 7) {
-            sprintf(err, "Invalid channel number: %s", tokens[1].c_str());
+        if (!parseInt(tokens[1].c_str(), board) || board < 0 || board > 7) {
+            sprintf(err, "Invalid board number: %s", tokens[1].c_str());
             return -1;
         }
-        return setdevicetype(channel, tokens[2].c_str()) ? -1 : 0;
+        return setdevicetype(board, tokens[2].c_str()) ? -1 : 0;
     }
+ 
+    else if(devtype != NODEV ){
+      const std::string& func = tokens[1];
+      if (!parseInt(tokens[2].c_str(), board) || board < 0 || board > 7) {
+        sprintf(err, "Invalid board number: %s", tokens[2].c_str());
+        return -1;
+      }
+      else if(boardsactive[board] == 0){
+        Serial.println("board is not active");
+        return -1;
+      }else if( module[board]->thisDeviceType != devtype)Serial.println("use SETDEV with the proper board type");
+
+      else switch(devtype){
+        case DAC4D:    //DAC 4 diff channels (triax)
+          if(func == "VS"){
+            if(tokens.size() != 5){
+              sprintf(err, "DAC4D VS requires 5 arguments, type help");
+              return -1;
+            }else if (!parseInt(tokens[3].c_str(), channel)|| channel < 0 || channel > 7) {
+              sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+              return -1;
+            }else if (!parseDouble(tokens[4].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltage(channel, voltage) ? -1 : 0;
+          }else if(func == "VSD"){
+            if(tokens.size() != 5){
+              sprintf(err, "DAC4D VSD requires 5 arguments, type help");
+              return -1;
+            }else if (!parseInt(tokens[3].c_str(), channel)|| channel < 0 || channel > 3) {
+              sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+              return -1;
+            }else if (!parseDouble(tokens[4].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltageDiff(channel, voltage) ? -1 : 0;
+          }else sprintf(err, "unknown command for DAC4D");
+        
+        case DAC16D:  //DAC 16 differential + 500mA 5V + 8V 1mA + 1 diff ADC
+          if(func == "VS"){
+            if(tokens.size() != 5){
+              sprintf(err, "DAC16D VS requires 5 arguments, type help");
+              return -1;
+            }else if (!parseInt(tokens[3].c_str(), channel)|| channel < 0 || channel > 31) {
+              sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+              return -1;
+            }else if (!parseDouble(tokens[4].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltage(channel, voltage) ? -1 : 0;
+          }else if(func == "VSD"){
+            if(tokens.size() != 5){
+              sprintf(err, "DAC16D VSD requires 5 arguments, type help");
+              return -1;
+            }else if (!parseInt(tokens[3].c_str(), channel)|| channel < -3 || channel > 15) {
+              sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+              return -1;
+            }else if (!parseDouble(tokens[4].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltageDiff(channel, voltage) ? -1 : 0;
+          }else if(func == "VR"){
+            if(tokens.size() != 3){
+              sprintf(err, "DAC16D VR requires 3 arguments, type help");
+              return -1;
+            }else{
+              double chP = module[board]->ReadVoltage(0);
+              double chN = module[board]->ReadVoltage(1);
+              
+              *value = (float)(chP-chN);
+              return 2;
+            } 
+          }else if(func == "VSB"){
+            if(tokens.size() != 4){
+              sprintf(err, "DAC16D VSB requires 4 arguments, type help");
+              return -1;
+            }else if (!parseDouble(tokens[3].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltage(-1, voltage) ? -1 : 0;
+          }else{
+            sprintf(err, "unknown command for DAC16D");
+            return -1;
+          }
+        
+        case FAFD:   return 0;//4ADC + 4DAC
+        case HIC4:  return 0; //4DAC high current
+        case ADC4D: 
+        if(func == "VRD"){
+          if(tokens.size() != 4){
+            sprintf(err, "DAC16D VSD requires 4 arguments, type help");
+            return -1;
+          }else if (!parseInt(tokens[3].c_str(), channel)|| channel < 0 || channel > 4) {
+            sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+            return -1;
+          }else {
+            double chP = module[board]->ReadVoltage(2*channel+1);
+            double chN = module[board]->ReadVoltage(2*channel);
+            
+            *value = (float)(chP-chN);
+            return 2;
+          }
+        }else {
+          sprintf(err, "unknown command for DAC4D");
+          return -1;
+        }
+      }
+    }
+/*
 
     else if (command == "DAC4D" || command == "DAC16D") {
         if (tokens.size() < 5) {
@@ -590,7 +716,7 @@ int do_command(char *cmd, float *value) {
             return -1;
         }
     }
-
+*/
     else if (command == "debug") {
         if (tokens.size() != 2) {
             sprintf(err, "debug command expects 1 argument: debug [on/off]");
