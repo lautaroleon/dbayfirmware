@@ -104,7 +104,7 @@ xE-xx-xx-xx-xx-xx
  */
 
 
-byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAC  };
+byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAD  };
 
 unsigned int localPort = 8880;      // local port to listen on
 
@@ -147,40 +147,7 @@ std::vector<std::string> tokenizeCommand(const char* cmd) {
     return tokens;
 }
 
-/*
-int mystrtoi(const char *str, int *value)
-{
-    long lvalue;
-    char *endptr;
-    errno = 0;
-    lvalue = strtol(str,&endptr,0);
-    if (errno)
-        return -1;
-    if (endptr == str)
-        return -1;
-    if (lvalue > INT_MAX || lvalue < INT_MIN)
-        return -1;
-    *value = (int) lvalue;
-    return 0;
-}
 
-double mystrtod(const char *nptr, double *value)
-{
-    char *endptr;
-    errno = 0;
-    *value = strtod(nptr,&endptr);
-
-    if (endptr == nptr) {
-        sprintf(err, "error converting '%s' to a double", nptr);
-        return -1;
-    } else if (errno != 0) {
-        sprintf(err, "error converting '%s' to a double", nptr);
-        return -1;
-    }
-
-    return 0;
-}
-*/
 int strtobool(const char *str, bool *value)
 {
     if (!strcasecmp(str,"on") || !strcasecmp(str,"1"))
@@ -210,9 +177,10 @@ void scanI2C(){
 
     if (error == 0)
     {
-      Serial.print("I2C device found at address 0x");
+      Serial.print("I2C device found at address ");
       if (address<16)Serial.print("0");
-      Serial.print(address,HEX);
+      Serial.print(address-BASE_ADDR);
+      //Serial.print(address,HEX);
       Serial.println("  !  ");
       for (int i = 0; i < MAXMODULES; i++){
             //Serial.println(BASE_ADDR+i, HEX);
@@ -295,6 +263,7 @@ int setdevicetype( int channel, char *devtypestr){
   
   if( channel <0 || channel >= MAXMODULES){
     Serial.print("channel out of range");
+    sprintf(err, "channel out of range");
     return -1;
   }
   deviceType devtype=dbayDev::deviceTypeFromString(devtypestr);
@@ -303,6 +272,7 @@ int setdevicetype( int channel, char *devtypestr){
   
   if(boardsactive[channel] == 0){
     Serial.println("board is not active");
+    sprintf(err, "board is not active");
     return -1;
   }else switch(devtype){
     case NODEV:
@@ -350,202 +320,13 @@ int setdevicetype( int channel, char *devtypestr){
       }else return 0;
     default:
       Serial.println("wrong devtype");
+      sprintf(err, "wrong devtype");
       return -1;
       break;
   }
 }
 
-/*
-int do_command(char *cmd, float *value){
-    int ntok = 0;
-    char *tokens[10];
-    char *tok;
-    int channel, board ;
-    double voltage;
-    bool ison;
-    
-    if (cmd[strlen(cmd)-1] == '\n')
-        cmd[strlen(cmd)-1] = '\0';
 
-    if (debug) {
-        sprintf(msg, "received command: %s\n", cmd);
-        Serial.print(msg);
-    }
-
-    tok = strtok(cmd, " ");
-    while (tok != NULL && ntok < (int) LEN(tokens)) {
-        tokens[ntok++] = tok;
-        tok = strtok(NULL, " ");
-        sprintf(msg, "tok:: %s\t", tok);
-        //Serial.print(msg);
-    }
-    if(!strcmp(tokens[0], "SETDEV")){
-        if (ntok != 3) {
-            sprintf(err, "SETDEV command expects 2 arguments: [address] [device type]");
-            return -1;
-        }else if(mystrtoi(tokens[1],&channel)) {
-              sprintf(err, "expected argument 2 to be integer but got '%s'", tokens[3]);
-              return -1;
-            }else if(channel<0 || channel >7) {
-              sprintf(err, "channel out of range");
-              return -1;
-            }else if(setdevicetype(channel, tokens[2]))return -1;
-    }else if (!strcmp(tokens[0], "DAC4D")){ 
-        if (ntok != 5) {
-            sprintf(err, "DAC4D command expects 4 arguments: [VS/VSD] [board] [channel] [voltage]");
-            return -1;
-        }else if(!strcmp(tokens[1], "VS")){
-            if(mystrtoi(tokens[2],&board)) {
-              sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-              return -1;
-            }else if(mystrtoi(tokens[3],&channel)) {
-              sprintf(err, "expected argument 2 to be integer but got '%s'", tokens[3]);
-              return -1;
-            }else if (mystrtod(tokens[4],&voltage)) {
-              sprintf(err, "expected argument 3 to be double but got '%s'", tokens[4]);
-              return -1;
-            }else if(module[board] == nullptr){
-              sprintf(err, "DAC4D, VS, board is not initialized yet. Use SETDEV.");
-              return -1;
-            }else if(strcmp(module[board]->deviceTypeToString() , "DAC4D")){
-              sprintf(err, "Calling DAC4D command but board is initialized as '%s'", module[board]->deviceTypeToString());
-              return -1;
-            }else if(module[board]->SetVoltage(channel, voltage))return -1;
-        }else if(!strcmp(tokens[1], "VSD")){
-            if(mystrtoi(tokens[2],&board)) {
-              sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-              return -1;
-            }else if(mystrtoi(tokens[3],&channel)) {
-              sprintf(err, "expected argument 2 to be integer but got '%s'", tokens[3]);
-              return -1;
-            }else if (mystrtod(tokens[4],&voltage)) {
-              sprintf(err, "expected argument 3 to be double but got '%s'", tokens[4]);
-              return -1;
-            }else if(module[board] == nullptr){
-              sprintf(err, "DAC4D, VSD, board is not initialized yet. Use SETDEV.");
-              return -1;
-            }else if(strcmp(module[board]->deviceTypeToString() , "DAC4D")){
-              sprintf(err, "Calling DAC4D command but board is initialized as '%s'", module[board]->deviceTypeToString());
-              return -1;
-            }else if(module[board]->SetVoltageDiff(channel, voltage))return -1;          
-        }
-
-    }else if (!strcmp(tokens[0], "DAC16D")){
-
-        
-            if(!strcmp(tokens[1], "VS")){
-                if (ntok != 5){
-                  sprintf(err, "VS command expects 3 arguments: [board] [channel] [voltage]");
-                  return -1;
-                }else if(mystrtoi(tokens[2],&board)) {
-                  sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-                  return -1;
-                }else if(mystrtoi(tokens[3],&channel)) {
-                  sprintf(err, "expected argument 2 to be integer but got '%s'", tokens[3]);
-                  return -1;
-                }else if (mystrtod(tokens[4],&voltage)) {
-                  sprintf(err, "expected argument 3 to be double but got '%s'", tokens[4]);
-                  return -1;
-                }else if(module[board] == nullptr){
-                  sprintf(err, "DAC4D, VS, board is not initialized yet. Use SETDEV.");
-                  return -1;
-                }else if(strcmp(module[board]->deviceTypeToString() , "DAC16D")){
-                  sprintf(err, "Calling DAC16D command but board is initialized as '%s'", module[board]->deviceTypeToString());
-                  return -1;
-                }else if(module[board]->SetVoltage(channel, voltage))return -1;
-            }else if(!strcmp(tokens[1], "VSD")){
-                if (ntok != 5){
-                  sprintf(err, "VSD command expects 3 arguments: [board] [channel] [voltage]");
-                  return -1;
-                }else if(mystrtoi(tokens[2],&board)) {
-                  sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-                  return -1;
-                }else if(mystrtoi(tokens[3],&channel)) {
-                  sprintf(err, "expected argument 2 to be integer but got '%s'", tokens[3]);
-                  return -1;
-                }else if (mystrtod(tokens[4],&voltage)) {
-                  sprintf(err, "expected argument 3 to be double but got '%s'", tokens[4]);
-                  return -1;
-                }else if(module[board] == nullptr){
-                  sprintf(err, "DAC16D, VSD, board is not initialized yet. Use SETDEV.");
-                  return -1;
-                }else if(strcmp(module[board]->deviceTypeToString() , "DAC16D")){
-                  sprintf(err, "Calling DAC16D command but board is initialized as '%s'", module[board]->deviceTypeToString());
-                  return -1;
-                }else if(module[board]->SetVoltageDiff(channel, voltage))return -1;          
-            }else if(!strcmp(tokens[1], "VSB")){
-                if (ntok != 4){
-                  sprintf(err, "VSB command expects 2 arguments: [board] [voltage] %d",ntok);
-                  return -1;
-                }else if(mystrtoi(tokens[2],&board)) {
-                  sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-                  return -1;
-                }else if (mystrtod(tokens[3],&voltage)) {
-                   sprintf(err, "expected argument 2 to be double but got '%s'", tokens[4]);
-                   return -1;
-                }else if(module[board] == nullptr){
-                  sprintf(err, "DAC16D, VSB, board is not initialized yet. Use SETDEV.");
-                  return -1;
-                }else if(strcmp(module[board]->deviceTypeToString() , "DAC16D")){
-                  sprintf(err, "Calling DAC16D command but board is initialized as '%s'", module[board]->deviceTypeToString());
-                  return -1;
-                }else if(module[board]->SetVoltage(-1, voltage))return -1; 
-            }else if(!strcmp(tokens[1], "VR")){
-                if (ntok != 3){
-                  sprintf(err, "VR command expects 1 arguments: [board]");
-                  return -1;
-                }else if(mystrtoi(tokens[2],&board)) {
-                    sprintf(err, "expected argument 1 to be integer but got '%s'", tokens[2]);
-                    return -1;
-                }else if(module[board] == nullptr){
-                  sprintf(err, "DAC16D, VR, board is not initialized yet. Use SETDEV.");
-                  return -1;
-                }else if(strcmp(module[board]->deviceTypeToString() , "DAC16D")){
-                  sprintf(err, "Calling DAC16D command but board is initialized as '%s'", module[board]->deviceTypeToString());
-                  return -1;
-                }else{
-                  //Serial.println("hey");
-                    double chP = module[board]->ReadVoltage(0);
-                   // double chN = module[board]->ReadVoltage(1);
-                    *value = (float)chP;
-                    return 2;
-                }
-
-            }
-            else{
-              sprintf(err, "Unknown parameter for DAC16D");
-              return -1;
-            }
-        
-    }else if (!strcmp(tokens[0], "debug")) {
-          if (ntok != 2) {
-              sprintf(err, "debug command expects 1 argument: debug [on/off]");
-              return -1;
-          }
-  
-          if (strtobool(tokens[1],&ison)) {
-              sprintf(err, "expected argument 1 to be yes/no but got '%s'", tokens[1]);
-              return -1;
-          }
-          debug = ison;
-    }else if (!strcmp(tokens[0], "reset")) {
-          
-          return (reset());
-    }else if (!strcmp(tokens[0], "help")) {
-        sprintf(err,"SetDac [board] [channel] [voltage]\n"
-                      "help\n"
-                      "debug");
-                   
-        return -1;
-    }else {
-        sprintf(err, "unknown command '%s'", tokens[0]);
-        //sprintf(err, "error : message '%s'", cmd);
-        return -1;
-    }
- 
-    return 0;
-}
-*/
 int do_command(char *cmd, float *value) {
     std::vector<std::string> tokens = tokenizeCommand(cmd);
     if (tokens.empty()) {
@@ -678,45 +459,7 @@ int do_command(char *cmd, float *value) {
         }
       }
     }
-/*
 
-    else if (command == "DAC4D" || command == "DAC16D") {
-        if (tokens.size() < 5) {
-            sprintf(err, "%s requires at least 4 arguments.", command.c_str());
-            return -1;
-        }
-
-        const std::string& mode = tokens[1];
-        int board, channel;
-        double voltage;
-
-        if (!parseInt(tokens[2].c_str(), board)) {
-            sprintf(err, "Invalid board number: %s", tokens[2].c_str());
-            return -1;
-        }
-        if (!parseInt(tokens[3].c_str(), channel)) {
-            sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
-            return -1;
-        }
-        if (!parseDouble(tokens[4].c_str(), voltage)) {
-            sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
-            return -1;
-        }
-
-        if (!checkModuleInit(board, command.c_str())) {
-            return -1;
-        }
-
-        if (mode == "VS") {
-            return module[board]->SetVoltage(channel, voltage) ? -1 : 0;
-        } else if (mode == "VSD") {
-            return module[board]->SetVoltageDiff(channel, voltage) ? -1 : 0;
-        } else {
-            sprintf(err, "Unknown mode: %s", mode.c_str());
-            return -1;
-        }
-    }
-*/
     else if (command == "debug") {
         if (tokens.size() != 2) {
             sprintf(err, "debug command expects 1 argument: debug [on/off]");
@@ -870,25 +613,7 @@ void loop()
             k = 0;
         }
     }
-  /*while (Serial.available() > 0) {
-        char incomingChar = Serial.read();
-
-        if (incomingChar == '\n' || incomingChar == '\r') {  // End of command
-            if (k > 0) {  // Ensure buffer is not empty
-                cmd[k] = '\0';  // Null-terminate the string
-                 int rv = do_command(cmd, &temp);
-                 format_message(rv,temp);
-                 Serial.print(msg);
-                k = 0;  // Reset buffer for next command
-            }
-        } else if (k < MAX_MSG_LENGTH - 1) {  // Prevent buffer overflow
-            cmd[k++] = incomingChar;
-        } else {
-            Serial.println("Error: Command too long");
-            k = 0;  // Reset buffer to avoid overflow
-        }
-    }*/
-
+ 
 #ifdef ETHERNET
     // if there's data available, read a packet
     int packetSize = Udp.parsePacket();
