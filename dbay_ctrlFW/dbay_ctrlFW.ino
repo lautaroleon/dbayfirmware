@@ -14,6 +14,7 @@
 #include "dbay_32DAC.h"
 #include "dbay_4triaxADC.h"
 #include "MCP23S08.h"
+#include "dbay_32DAC_4ETH.h"
 
 
 #define MAX_MSG_LENGTH 1024
@@ -334,7 +335,8 @@ int do_command(char *cmd, float *value) {
         return -1;
     }
 
-    const std::string& command = tokens[0];
+    //const std::string& command = tokens[0];
+     std::string command = tokens[0];
     deviceType devtype = dbayDev::deviceTypeFromString(command.c_str());
     int board, channel;
     double voltage;
@@ -353,12 +355,15 @@ int do_command(char *cmd, float *value) {
     }
  
     else if(devtype != NODEV ){
-      const std::string& func = tokens[1];
+      //const std::string& func = tokens[1];
+      std::string func = tokens[1];
       if (!parseInt(tokens[2].c_str(), board) || board < 0 || board > 7) {
         sprintf(err, "Invalid board number: %s", tokens[2].c_str());
         return -1;
       }
       else if(boardsactive[board] == 0){
+        Serial.println(board);
+        Serial.println(boardsactive[board]);
         Serial.println("board is not active");
         return -1;
       }else if( module[board]->thisDeviceType != devtype)Serial.println("use SETDEV with the proper board type");
@@ -435,11 +440,11 @@ int do_command(char *cmd, float *value) {
             sprintf(err, "unknown command for DAC16D");
             return -1;
           }
-        
+        case DAC4ETH: return 0;
         case FAFD:   return 0;//4ADC + 4DAC
         case HIC4:  return 0; //4DAC high current
         case ADC4D: 
-        if(func == "VRD"){
+          if(func == "VRD"){
           if(tokens.size() != 4){
             sprintf(err, "DAC16D VSD requires 4 arguments, type help");
             return -1;
@@ -453,10 +458,13 @@ int do_command(char *cmd, float *value) {
             *value = (float)(chP-chN);
             return 2;
           }
-        }else {
+          }else {
           sprintf(err, "unknown command for DAC4D");
           return -1;
-        }
+          }
+        case NODEV:
+          sprintf(err, "invalid device");
+          return -1;
       }
     }
 
@@ -488,7 +496,6 @@ int do_command(char *cmd, float *value) {
                     "debug [on/off]\n"
                     "reset\n"
                     "help"
-                    "debug\n"
                     "\n"
                     "ip: %d.%d.%d.%d\n"
                     "MAC: %x-%x-%x-%x-%x-%x",

@@ -8,9 +8,9 @@ dbayDev::dbayDev(int address, TwoWire *bus):i2cadress(address), _bus (bus){
 }
 
 
-dbayDev::~dbayDev(){
+/*dbayDev::~dbayDev() {
   
-}
+}*/
 
 
 
@@ -28,6 +28,7 @@ static char* dbayDev::deviceTypeToString(){
     case FAFD:  return "FAFD"; //4ADC + 4DAC
     case HIC4: return "HIC4";  //4DAC high current
     case ADC4D: return "ADC4D";
+    case DAC4ETH: return "DAC4ETH";
     default: return "UNKNOWN";
   }
 }
@@ -41,7 +42,9 @@ deviceType dbayDev::deviceTypeFromString(char* devtypestr){
      return deviceType::DAC16D;
   }else if (!strcmp(devtypestr, "ADC4D")){
     return deviceType::ADC4D;
-  }else if (!strcmp(devtypestr, "DAC16D")){
-  return deviceType::DAC16D;
+  }else if (!strcmp(devtypestr, "DAC16D")) {
+      return deviceType::DAC16D;
+  }else if (!strcmp(devtypestr, "DAC4ETH")) {
+      return deviceType::DAC4ETH;
   }else return deviceType::NODEV;
 }

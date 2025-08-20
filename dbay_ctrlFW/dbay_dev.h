@@ -19,14 +19,15 @@ enum deviceType{
   DAC16D,  //DAC 16 differential + 500mA 5V + 8V 1mA + 1 diff ADC
   FAFD,   //4ADC + 4DAC
   HIC4,   //4DAC high current
-  ADC4D //4 channel triax diff adc
+  ADC4D, //4 channel triax diff adc
+  DAC4ETH //32 chanel DAC (16diff) 4 ethernet outputs
 };
 
 class dbayDev {
 
   public:
     dbayDev(int address, TwoWire *bus);
-    ~dbayDev();
+    virtual ~dbayDev() {};
     char* deviceTypeToString();
     static deviceType deviceTypeFromString(char* devtypestr);
     virtual int reset();

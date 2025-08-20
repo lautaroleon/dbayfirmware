@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_ctrlFW.ino||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_ctrlFW.ino||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC_4ETH.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_32DAC_4ETH.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC_4ETH.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_32DAC_4ETH.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_32DAC.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_4triacDAC.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_4triacDAC.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_4triacDAC.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_4triacDAC.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_dev.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_dev.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_dev.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_dev.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbay_32DAC.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\ad7124-driver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ad7124-driver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "dbay_4triacDAC.h",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_4triacDAC.h",
+              "RelativeDocumentMoniker": "dbay_4triacDAC.h",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_4triacDAC.h",
+              "RelativeToolTip": "dbay_4triacDAC.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-07-10T22:56:33.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "dbay_4triacDAC.cpp",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_4triacDAC.cpp",
+              "RelativeDocumentMoniker": "dbay_4triacDAC.cpp",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_4triacDAC.cpp",
+              "RelativeToolTip": "dbay_4triacDAC.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-10T22:51:37.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "dbay_dev.cpp",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_dev.cpp",
+              "RelativeDocumentMoniker": "dbay_dev.cpp",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_dev.cpp",
+              "RelativeToolTip": "dbay_dev.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-10T21:40:44.824Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "dbay_dev.h",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_dev.h",
+              "RelativeDocumentMoniker": "dbay_dev.h",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_dev.h",
+              "RelativeToolTip": "dbay_dev.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB8AAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-07-10T21:40:44.207Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "dbay_32DAC_4ETH.cpp",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC_4ETH.cpp",
+              "RelativeDocumentMoniker": "dbay_32DAC_4ETH.cpp",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC_4ETH.cpp",
+              "RelativeToolTip": "dbay_32DAC_4ETH.cpp",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAADMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-10T21:39:49.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "dbay_32DAC_4ETH.h",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC_4ETH.h",
+              "RelativeDocumentMoniker": "dbay_32DAC_4ETH.h",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC_4ETH.h",
+              "RelativeToolTip": "dbay_32DAC_4ETH.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-07-10T21:37:20.684Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "dbay_32DAC.h",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC.h",
+              "RelativeDocumentMoniker": "dbay_32DAC.h",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC.h",
+              "RelativeToolTip": "dbay_32DAC.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-07-10T21:37:06.295Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "dbay_32DAC.cpp",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC.cpp",
+              "RelativeDocumentMoniker": "dbay_32DAC.cpp",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_32DAC.cpp",
+              "RelativeToolTip": "dbay_32DAC.cpp",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAAwKcAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-10T21:37:00.972Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ad7124-driver.cpp",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\ad7124-driver.cpp",
+              "RelativeDocumentMoniker": "ad7124-driver.cpp",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\ad7124-driver.cpp",
+              "RelativeToolTip": "ad7124-driver.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-10T21:26:46.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "dbay_ctrlFW.ino",
+              "DocumentMoniker": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_ctrlFW.ino",
+              "RelativeDocumentMoniker": "dbay_ctrlFW.ino",
+              "ToolTip": "H:\\My Drive\\dbay\\dbayfirmware\\dbay_ctrlFW\\dbay_ctrlFW.ino",
+              "RelativeToolTip": "dbay_ctrlFW.ino",
+              "ViewState": "AQIAALUBAAAAAAAAAAAAALYBAAAfAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAW3SURBVEhLjZV7jF1FHcc/vzn3nnPf\u002B25p2q7tboMtTWEN1la6W1EIQlIj4WE1IVETY0A04gNNKSRakzURQUwINEZ8JETSFEyNjWjEDbAtSmWpxVJpqLt97\u002B69d/fu4z7Oa2b84y59bDD0k0xy5sz8vr/fmTnzHeEDmA1CCm6SPaMnvbcrM2mA9W2tje09q4K5MKLFcxeHXMRaK4vfAew/fYZt3Sv50svDXWPz1S2VMNza0PrDsbHtAAkl02nHOd7muq\u002BuzucO/ubGgdJ7MYu5LIG1lm1/follmXTuyFRleynw763H\u002BtrYGNc2Z1wIEyChVJhJOG91eand13W07RmvN6r7b70ZkYuyF54OThb52isHWJ7Ndp\u002BYmxuci6K7BXEdkUVlXIIFbS0WGxaSyb1rCoWHztVqp5/6RD9bli6B9xJYa/nY8/tocd3uE3PzvwiN/nQqkVio84OxWPw4xlXOX9YU8l\u002BdDcPTh\u002B66HZEFhZv3/ZF80s0dLpefDq29J\u002Be6Vyh9EQtUwxBX5NmPdHbeNx\u002BF1Zdu/wzO/S8Ps\u002BfYO8TYe\u002Bpx/P285zmXruGVIoCrFLUwXDvj\u002ByffOD9\u002B\u002BP4dD\u002BHYW25jRT7XWaw3Hk\u002B5XnfScdC2uZmeo1AIkVnY3IXE1loM4ClFQoRooa9EAHHqQbBsfUf7vrPz1bosefqXpBz12YZlTyGX9ay19ORyfK53Ndd2dmCsZaRY4vejY5yqNwD4UDbLHT2ruL6rEyXCkVKZvf8dY7RWQ0SYq9aCtLDd1\u002BYPTu3qtbitLV9RyeRWJ5FgXUuBJ/o3c01LgaPFErUw5JbuFdy0cjlHS2WWZtL8bMtm\u002BtraOFYqUWn4fGrlcm5asZyRYpFiEKKNTkRheLb07om/ysCzz7n/nq68kMrltmU8j8c2beTqfI5vvHqAY9VmRevzeQY3b6Q1lQKgUq\u002Bz4x\u002BHmNWG0Bi6PJcnt/ZzvDLDdw69QT0M8avV/Rva2\u002B5U4/PzKaN1mwZaXZe\u002Bzg6ePzHKeBTz\u002Bd4evtC7mlIUsfPQCAXPJZ9MsvP1fzKlDTuv7\u002BNbG67hjB/wwugYfV0dtCSTaMBo3TY\u002BP59SYRRhtMZcPDRYJRhAjEGMwVgwSjX/FQHjOAvjFjEWYy1WFHZBw1gwWhNGEcoT8a3W09poin7Am8Uyd63ppSuV4ldjp3hm9BRt6RSDmz5KpV5npuEzuGkjLa7LIyOH\u002BfFbR1mWzXJn72pGJicpBgHaaKzW056ILzy4g0xr60\u002Bc1tYHnVyeDfkcT/V/nILncWBikoRSbLlqCZVanQcO/h2rFE/csJn2dJrhiUm0tQwsW8pcvcF9w69xtN5AV\u002BfRMzOP1mdmvud4t96GsiZtRO5IZDOJiSBk\u002BNx5kljWtRTIKOFPYyfZ9eYR3m74nA9Chs6ew8Yx61paaEsmGDp9hl2Hj/Cfho8IRLOzgYTBY8pzj0t21yAY0xkr2Z9cetUmJ53BGAPWkhZp\u002BoxtHrLmQQJjLVhLasFrGtY2x5VCN\u002BpEkxOvJ4zdhlJl5Smh5vtlG4a7o0olMFo37VYpGiL4ohClEBHsgueICKIUvgiNhbkigtGaqFIJbBjurvl\u002B2VOC0xj6G96Nn0RZ\u002B64OglXAdSqTuWALV4y1RFNT6JmZ3znwqOOoqPqDR1AAPSmXKI5r6PjhqFx6MSwVscZgL6n6/zYRrDGEpSJRufQiOn44iuNaT6p5lToA5aEhvP4B4jieE6Nf0fV6l/H9tZJIJlQyCUo1v2hxsxZdqxFNjAdxZfo50fED1pizrlJM/OiHsPjKTHz7u\u002Bimc2aBuyXp3uvksn0ql/dUKoU4CQCsjjG\u002Bj6nOB7pa\u002B5eNwt3AXqDmKCF\u002B/KcXNN93oeXr38SiANOByA0oNSCOsxal2gEwZtpq/Q7GDGPta6CmBIN98ueLpd4/wWV88cugNWSyLiJNt7PWp14LcRz47a8XR1zG/wDJAdR83Nj0UwAAAABJRU5ErkJggg==",
+              "WhenOpened": "2025-07-10T21:26:37.605Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
