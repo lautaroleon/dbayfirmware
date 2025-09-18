@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include "PCA9557.h"
 #include <errno.h>
-
+#include <string>
 
 #ifndef __DBAY_DEV_H__
 #define __DBAY_DEV_H__
@@ -28,8 +28,8 @@ class dbayDev {
   public:
     dbayDev(int address, TwoWire *bus);
     virtual ~dbayDev() {};
-    char* deviceTypeToString();
-    static deviceType deviceTypeFromString(char* devtypestr);
+    std::string deviceTypeToString();
+    static deviceType deviceTypeFromString(std::string devtypestr);
     virtual int reset();
     
     enum deviceType thisDeviceType;

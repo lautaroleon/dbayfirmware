@@ -114,31 +114,31 @@ char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
 
 EthernetUDP Udp;
 
-bool parseInt(const char* str, int& outVal) {
+bool parseInt(std::string str, int& outVal) {
     char* endptr;
-    outVal = strtol(str, &endptr, 10);
+    outVal = strtol(str.c_str(), &endptr, 10);
     return (*endptr == '\0');
 }
 
-bool parseDouble(const char* str, double& outVal) {
+bool parseDouble(std::string str, double& outVal) {
     char* endptr;
-    outVal = strtod(str, &endptr);
+    outVal = strtod(str.c_str(), &endptr);
     return (*endptr == '\0');
 }
 
-bool checkModuleInit(int board, const char* expectedType) {
+bool checkModuleInit(int board, char* expectedType) {
     if (module[board] == nullptr) {
         sprintf(err, "Board %d not initialized. Use SETDEV.", board);
         return false;
     }
-    if (strcmp(module[board]->deviceTypeToString(), expectedType)) {
-        sprintf(err, "Expected board %d to be '%s', but found '%s'", board, expectedType, module[board]->deviceTypeToString());
+    if (strcmp(module[board]->deviceTypeToString().c_str(), expectedType)) {
+        sprintf(err, "Expected board %d to be '%s', but found '%s'", board, expectedType, module[board]->deviceTypeToString().c_str());
         return false;
     }
     return true;
 }
 
-std::vector<std::string> tokenizeCommand(const char* cmd) {
+std::vector<std::string> tokenizeCommand(char* cmd) {
     std::vector<std::string> tokens;
     std::stringstream ss(cmd);
     std::string token;
@@ -149,11 +149,11 @@ std::vector<std::string> tokenizeCommand(const char* cmd) {
 }
 
 
-int strtobool(const char *str, bool *value)
+int strtobool(std::string str, bool *value)
 {
-    if (!strcasecmp(str,"on") || !strcasecmp(str,"1"))
+    if (!strcasecmp(str.c_str(),"on") || !strcasecmp(str.c_str(),"1"))
         *value = true;
-    else if (!strcasecmp(str,"off") || !strcasecmp(str,"0"))
+    else if (!strcasecmp(str.c_str(),"off") || !strcasecmp(str.c_str(),"0"))
         *value = false;
     else
         return -1;
@@ -260,7 +260,7 @@ int reset(){
     return 0;
 }
 
-int setdevicetype( int channel, char *devtypestr){
+int setdevicetype( int channel, std::string devtypestr){
   
   if( channel <0 || channel >= MAXMODULES){
     Serial.print("channel out of range");
@@ -307,18 +307,31 @@ int setdevicetype( int channel, char *devtypestr){
 
       }else return 0;
       case ADC4D: 
-      if(module[channel] == nullptr){
-        Serial.println("ADC4D created");
-        module[channel] = new dbay4triaxADC(BASE_ADDR+channel, &Wire);         
+        if(module[channel] == nullptr){
+          Serial.println("ADC4D created");
+          module[channel] = new dbay4triaxADC(BASE_ADDR+channel, &Wire);         
+          return 0;
+
+        }else if( module[channel]->thisDeviceType != devtype){
+          Serial.println("DAC4D replaced");
+          delete module[channel];
+          module[channel] = new dbay4triaxADC(BASE_ADDR+channel, &Wire);
+          return 0;
+
+        }else return 0;
+      case DAC4ETH:
+        if(module[channel] == nullptr){
+        Serial.println("DAC4ETH created");
+        module[channel] = new dbay32DAC_4ETH(BASE_ADDR+channel, &Wire);         
         return 0;
 
-      }else if( module[channel]->thisDeviceType != devtype){
-        Serial.println("DAC4D replaced");
-        delete module[channel];
-        module[channel] = new dbay4triaxADC(BASE_ADDR+channel, &Wire);
-        return 0;
+        }else if( module[channel]->thisDeviceType != devtype){
+          Serial.println("DAC4ETH replaced");
+          delete module[channel];
+          module[channel] = new dbay32DAC_4ETH(BASE_ADDR+channel, &Wire);
+          return 0;
 
-      }else return 0;
+        }else return 0;
     default:
       Serial.println("wrong devtype");
       sprintf(err, "wrong devtype");
@@ -334,24 +347,25 @@ int do_command(char *cmd, float *value) {
         sprintf(err, "Empty command received.");
         return -1;
     }
-
+    
     //const std::string& command = tokens[0];
-     std::string command = tokens[0];
-    deviceType devtype = dbayDev::deviceTypeFromString(command.c_str());
+    std::string command = tokens[0];
+    //deviceType devtype = dbayDev::deviceTypeFromString(command.c_str());
+    deviceType devtype = dbayDev::deviceTypeFromString(command);
     int board, channel;
     double voltage;
-
+    //Serial.print("command at entry, on token 0");Serial.println(command.c_str());
 
     if (command == "SETDEV") {
         if (tokens.size() != 3) {
             sprintf(err, "SETDEV requires 2 arguments: [address] [device type]");
             return -1;
         }
-        if (!parseInt(tokens[1].c_str(), board) || board < 0 || board > 7) {
+        if (!parseInt(tokens[1], board) || board < 0 || board > 7) {
             sprintf(err, "Invalid board number: %s", tokens[1].c_str());
             return -1;
         }
-        return setdevicetype(board, tokens[2].c_str()) ? -1 : 0;
+        return setdevicetype(board, tokens[2]) ? -1 : 0;
     }
  
     else if(devtype != NODEV ){
@@ -440,7 +454,33 @@ int do_command(char *cmd, float *value) {
             sprintf(err, "unknown command for DAC16D");
             return -1;
           }
-        case DAC4ETH: return 0;
+        case DAC4ETH: 
+          if(func == "VS"){
+            if(tokens.size() != 5){
+              sprintf(err, "DAC16D VS requires 5 arguments, type help");
+              return -1;
+            }else if (!parseInt(tokens[3].c_str(), channel)|| channel < 0 || channel > 31) {
+              sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+              return -1;
+            }else if (!parseDouble(tokens[4].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltage(channel, voltage) ? -1 : 0;
+          }else if(func == "VSD"){
+            if(tokens.size() != 5){
+              sprintf(err, "DAC16D VSD requires 5 arguments, type help");
+              return -1;
+            }else if (!parseInt(tokens[3].c_str(), channel)|| channel < -3 || channel > 15) {
+              sprintf(err, "Invalid channel number: %s", tokens[3].c_str());
+              return -1;
+            }else if (!parseDouble(tokens[4].c_str(), voltage)) {
+              sprintf(err, "Invalid voltage value: %s", tokens[4].c_str());
+              return -1;
+            }else return module[board]->SetVoltageDiff(channel, voltage) ? -1 : 0;
+          }else{
+            sprintf(err, "unknown command for DAC16D");
+            return -1;
+          }
         case FAFD:   return 0;//4ADC + 4DAC
         case HIC4:  return 0; //4DAC high current
         case ADC4D: 
@@ -490,6 +530,7 @@ int do_command(char *cmd, float *value) {
         sprintf(err, "Available commands:\n"
                     "SETDEV [board] [device]\n"
                     "DAC4D [VS/VSD] [board] [channel] [voltage]\n"
+                    "DAC4ETH [VS/VSD] [board] [channel] [voltage]\n"
                     "DAC16D [VS/VSD] [board] [channel] [voltage]\n"
                     "DAC16D VSB [board] [voltage]\n"
                     "DAC16D VR\n"

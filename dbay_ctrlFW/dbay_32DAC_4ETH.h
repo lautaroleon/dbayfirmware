@@ -11,7 +11,7 @@
 
 
 #define dbay32DAC_4ETH_CS2  4
-#define dbay32DAC_4ETH_LDAC2  12
+#define dbay32DAC_4ETH_LDAC2  5
 
 
 
@@ -25,6 +25,7 @@ public:
     int SetVoltage(int channel, double voltage) override;
     int SetVoltageDiff(int diffchannel, double voltage) override;
     int reset() override;
+    int diffChannelParser(int c);
 
     ltc268x* DAC1;
     ltc268x* DAC2;

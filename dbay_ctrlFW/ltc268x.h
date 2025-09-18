@@ -157,12 +157,8 @@
 class ltc268x {
     
     public:
-
-
-
+    
   //struct no_os_spi_desc     *spi_desc;
-
-  
     ltc268x_device_id      dev_id;
     uint16_t            pwd_dac_setting;
     uint16_t            dither_toggle_en;

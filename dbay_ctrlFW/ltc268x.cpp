@@ -55,7 +55,7 @@ ltc268x::ltc268x(   enum ltc268x_device_id       dev_id,
 
   // Set the address pin HIGH so we don't talk to multiple chips at once. 
 
-  if (!_BoardSel->digitalWrite(_PCA9557busDAC_CS,HIGH)) {
+  if (!_BoardSel->digitalWrite(this->_PCA9557busDAC_CS,HIGH)) {
       sprintf(_err, "Error setting address pin for board %i HIGH\n", _BoardSel->boardN);
       Serial.print(_err);
       //rv = -1;
@@ -166,7 +166,7 @@ int32_t ltc268x::spi_write(uint8_t reg, uint16_t data){
   SPI.endTransaction();
   //_BoardSel->digitalWrite(_PCA9557busDAC_CS, HIGH);
   delayMicroseconds(1);
-  if (!_BoardSel->digitalWrite(_PCA9557busDAC_CS,HIGH)) {
+  if (!_BoardSel->digitalWrite(this->_PCA9557busDAC_CS,HIGH)) {
       sprintf(_err, "Error setting address pin for board %i HIGH\n", _BoardSel->boardN);
       Serial.print(_err);
       //rv = -1;

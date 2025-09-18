@@ -20,7 +20,7 @@ int dbayDev::reset(){
   
 }
 
-static char* dbayDev::deviceTypeToString(){
+std::string dbayDev::deviceTypeToString(){
   switch(this->thisDeviceType){
     case NODEV: return "NODEV";
     case DAC4D: return "DAC4D";   //DAC 4 diff channels (triacs)
@@ -33,18 +33,18 @@ static char* dbayDev::deviceTypeToString(){
   }
 }
 
-deviceType dbayDev::deviceTypeFromString(char* devtypestr){
-  if(!strcmp(devtypestr , "NODEV")){
+deviceType dbayDev::deviceTypeFromString(std::string devtypestr){
+  if(!strcmp(devtypestr.c_str() , "NODEV")){
     return deviceType::NODEV;
-  }else if (!strcmp(devtypestr, "DAC4D")){
+  }else if (!strcmp(devtypestr.c_str(), "DAC4D")){
      return deviceType::DAC4D;
-  }else if (!strcmp(devtypestr, "DAC16D")){
+  }else if (!strcmp(devtypestr.c_str(), "DAC16D")){
      return deviceType::DAC16D;
-  }else if (!strcmp(devtypestr, "ADC4D")){
+  }else if (!strcmp(devtypestr.c_str(), "ADC4D")){
     return deviceType::ADC4D;
-  }else if (!strcmp(devtypestr, "DAC16D")) {
+  }else if (!strcmp(devtypestr.c_str(), "DAC16D")) {
       return deviceType::DAC16D;
-  }else if (!strcmp(devtypestr, "DAC4ETH")) {
+  }else if (!strcmp(devtypestr.c_str(), "DAC4ETH")) {
       return deviceType::DAC4ETH;
   }else return deviceType::NODEV;
 }

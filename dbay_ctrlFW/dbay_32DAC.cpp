@@ -109,7 +109,7 @@ int dbay32DAC::reset(){
       int CSpin1 = dbay32DAC_CS1;
       int CSpin2 = dbay32DAC_CS2;
       
-      DAC1 = new ltc268x(dacid, 
+      this->DAC1 = new ltc268x(dacid, 
                           PWDdacSett,
                           ditherToggleEN,
                           ditherMode,
@@ -121,7 +121,7 @@ int dbay32DAC::reset(){
                           this->BoardSel,
                           CSpin1);
 //delay(3000);
-        DAC2 = new ltc268x(dacid, 
+        this->DAC2 = new ltc268x(dacid, 
                           PWDdacSett,
                           ditherToggleEN,
                           ditherMode,
@@ -151,32 +151,21 @@ int dbay32DAC::reset(){
 
 
 int dbay32DAC::SetVoltage (int channel, double voltage){
-
-
-  
     /*Serial.print(channel);Serial.print("\t");
     Serial.println(voltage);*/
-  
-
-  if(voltage<-10 || voltage >10){
-    Serial.print("DAC voltage out of range");
-    return -1;
-  }else if (channel == -1){ //channel -1 is assign on this board to the 8V
-    DAC4ch->set_V(1,0,(voltage/dbay32DAC_OPAMPGAIN));
-  }else if(channel<0 || channel >31){
-    Serial.print("DAC channel out of range");
-    return -1;
-  }else{
-    if(channel >= 0 && channel <= 15){
-      //Serial.println("printing on DAC1");
-      return (DAC1->set_voltage(channel, voltage));
+    if (voltage < -10 || voltage >10) {
+        Serial.print("DAC voltage out of range");
+        return -1;
     }
-    else if(channel > 15 && channel < 32){
-      //Serial.println("printing on DAC2");
-      return (DAC2->set_voltage(channel-16, voltage));
+    else if (channel < 0 || channel >31) {
+        Serial.print("DAC channel out of range");
+        return -1;
     }
-  }
-  
+    else if (channel >= 0 && channel <= 15) {
+            return (this->DAC1->set_voltage(channel, voltage));
+    }else if (channel > 15 && channel < 32) {   
+        return (this->DAC2->set_voltage(channel - 16, voltage));
+    }else return -1;
 }
 
 int dbay32DAC::SetVoltageDiff(int diffchannel, double voltage) {
