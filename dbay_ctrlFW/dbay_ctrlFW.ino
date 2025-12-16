@@ -104,8 +104,7 @@ xA-xx-xx-xx-xx-xx
 xE-xx-xx-xx-xx-xx
  */
 
-
-byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAD  };
+byte mac[] = { 0xFA, 0xAA, 0xAA, 0xAA, 0xAD, 0xAC  };
 
 unsigned int localPort = 8880;      // local port to listen on
 
@@ -236,14 +235,18 @@ int reset(){
        busaddressGPIO[i]->begin();
        for(int j = 0 ; j<3; j++){
           busaddressGPIO[i]->pinModeIO(GPIOi2cmap[j], OUTPUT);
-          if( (i & 0x01<<j)>>j )busaddressGPIO[i]->digitalWriteIO(GPIOi2cmap[j], true);
+          if( (i & 0x001<<j)>>j )busaddressGPIO[i]->digitalWriteIO(GPIOi2cmap[j], true);
           else busaddressGPIO[i]->digitalWriteIO(GPIOi2cmap[j], false);
         }
+        delete module[i];
+        module[i] = nullptr;
       }
       
       scanI2C();
       
-      for(int i =0; i<MAXMODULES; i++){
+  //This piece of code was to run the reset methode on the specific device subclass. but now
+  //I preffer to reinizialize the whole crate, like a powercycle, running all to nullptr back    
+  /*    for(int i =0; i<MAXMODULES; i++){
         if(boardsactive[i]){
           Serial.print("board active: ");Serial.println(i);
             if(module[i] != nullptr){
@@ -255,7 +258,7 @@ int reset(){
                 }
             }
         }
-    }
+    }*/
 
     return 0;
 }
@@ -380,8 +383,14 @@ int do_command(char *cmd, float *value) {
         Serial.println(boardsactive[board]);
         Serial.println("board is not active");
         return -1;
-      }else if( module[board]->thisDeviceType != devtype)Serial.println("use SETDEV with the proper board type");
-
+      }else if(module[board] == nullptr){
+        sprintf(err,"board is not initialized, use SETDEV");
+        return -1;
+      }
+      else if( module[board]->thisDeviceType != devtype){
+        sprintf(err,"use SETDEV with the proper board type");
+        return -1;
+      }
       else switch(devtype){
         case DAC4D:    //DAC 4 diff channels (triax)
           if(func == "VS"){
